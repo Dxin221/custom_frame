@@ -9,6 +9,3 @@ require APP_PATH. 'fastphp/Fastphp.php';
 $config = require APP_PATH. 'config/config.php';
 //实例化框架类
 (new fastphp\Fastphp($config))->run();
-
-$app = new devo();
-echo "<pre>";print_r(4);exit;
