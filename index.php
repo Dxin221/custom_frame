@@ -11,3 +11,4 @@ $config = require APP_PATH. 'config/config.php';
 (new fastphp\Fastphp($config))->run();
 
 $app = new devo();
+echo "<pre>";print_r(4);exit;
