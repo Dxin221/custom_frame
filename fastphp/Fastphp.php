@@ -20,10 +20,10 @@ class Fastphp
     public function run()
     {
         spl_autoload_register(array($this, 'loadClass'));
-//        $this->setReporting();
-//        $this->removeMagicQuotes();
-//        $this->unregisterGlobals();
-//        $this->setDbConfig();
+        $this->setReporting();
+        $this->removeMagicQuotes();
+        $this->unregisterGlobals();
+        $this->setDbConfig();
         $this->route();
     }
 
@@ -65,7 +65,7 @@ class Fastphp
         }
         if (!method_exists($controller, $actionName)) {
             //方法不存在
-            exit($actionName  . '方法不存在');
+            exit($actionName . '方法不存在');
         }
 
         // 如果控制器和操作名存在，则实例化控制器，因为控制器对象里面
@@ -76,6 +76,67 @@ class Fastphp
         // $dispatch保存控制器实例化后的对象，我们就可以调用它的方法，
         // 也可以像方法中传入参数，以下等同于：$dispatch->$actionName($param)
         call_user_func_array(array($dispatch, $actionName), $param);
+    }
+
+    // 检测开发环境
+    public function setReporting()
+    {
+        if (APP_DEBUG === true) {
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
+        } else {
+            error_reporting(E_ALL);
+            ini_set('display_errors', 0);
+            ini_set('log_errors', 1);
+        }
+    }
+
+    //检测敏感字符并删除
+    public function removeMagicQuotes()
+    {
+        if (get_magic_quotes_gpc()) {
+            $_GET     = isset($_GET) ? $this->stripSlashesDeep($_GET) : '';
+            $_POST    = isset($_POST) ? $this->stripSlashesDeep($_POST) : '';
+            $_COOKIE  = isset($_COOKIE) ? $this->stripSlashesDeep($_COOKIE) : '';
+            $_SESSION = isset($_SESSION) ? $this->stripSlashesDeep($_SESSION) : '';
+        }
+    }
+
+    // 删除敏感字符
+    public function stripSlashesDeep($value)
+    {
+        $value = is_array($value) ? array_map(array($this, 'stripSlashesDeep'), $value) : stripslashes($value);
+        return $value;
+    }
+
+    // 检测自定义全局变量并移除。因为 register_globals 已经弃用，如果
+    // 已经弃用的 register_globals 指令被设置为 on，那么局部变量也将
+    // 在脚本的全局作用域中可用。 例如， $_POST['foo'] 也将以 $foo 的
+    // 形式存在，这样写是不好的实现，会影响代码中的其他变量。 相关信息，
+    // 参考: http://php.net/manual/zh/faq.using.php#faq.register-globals
+    public function unregisterGlobals()
+    {
+        if (ini_get('register_globals')) {
+            $array = array('_SESSION', '_POST', '_GET', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES');
+            foreach ($array as $value) {
+                foreach ($GLOBALS[$value] as $key => $var) {
+                    if ($var === $GLOBALS[$key]) {
+                        unset($GLOBALS[$key]);
+                    }
+                }
+            }
+        }
+    }
+
+    // 配置数据库信息
+    public function setDbConfig()
+    {
+        if ($this->config['db']) {
+            define('DB_HOST', $this->config['db']['host']);
+            define('DB_NAME', $this->config['db']['dbname']);
+            define('DB_USER', $this->config['db']['username']);
+            define('DB_PASS', $this->config['db']['password']);
+        }
     }
 
     // 自动加载类
