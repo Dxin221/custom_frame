@@ -2,9 +2,6 @@
 //Controller 类用assign()方法实现把变量保存到View对象中。 这样，在调用$this->render() 后视图文件就能显示这些变量。
 namespace fastphp\base;
 
-//控制器基类
-use Couchbase\View;
-
 class Controller
 {
     protected $_controller;
