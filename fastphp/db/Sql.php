@@ -64,7 +64,7 @@ class Sql
         $sql = sprintf("SELECT * FROM `%s` %s", $this->table, $this->filter);
         $sth = Db::pdo()->prepare($sql);
         $sth = $this->formatParam($sth, $this->param);
-        $sth->excute();
+        $sth->execute();
 
         return $sth->fetchAll();
     }
@@ -75,7 +75,7 @@ class Sql
         $sql = sprintf("SELECT * FROM `%s` %s", $this->table, $this->filter);
         $sth = Db::pdo()->prepare($sql);
         $sth = $this->formatParam($sth, $this->param);
-        $sth->excute();
+        $sth->execute();
 
         return $sth->fetch();
     }
@@ -86,7 +86,7 @@ class Sql
         $sql = sprintf("DELETE FROM `%s` WHERE `%s` = :%s", $this->table, $this->primary, $this->primary);
         $sth = Db::pdo()->prepare($sql);
         $sth = $this->formatParam($sth, array($this->primary => $id));
-        $sth->excute();
+        $sth->execute();
 
         return $sth->rowCount();
     }
@@ -98,7 +98,7 @@ class Sql
         $sth = Db::pdo()->prepare($sql);
         $sth = $this->formatParam($sth, $data);
         $sth = $this->formatParam($sth, $this->param);
-        $sth->excute();
+        $sth->execute();
 
         return $sth->rowCount();
     }
@@ -110,7 +110,7 @@ class Sql
         $sth = Db::pdo()->prepare($sql);
         $sth = $this->formatParam($sth, $data);
         $sth = $this->formatParam($sth, $this->param);
-        $sth->excute();
+        $sth->execute();
 
         return $sth->rowCount();
     }

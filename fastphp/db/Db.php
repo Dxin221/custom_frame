@@ -11,7 +11,7 @@ class Db
 
     public static function pdo()
     {
-        if (self::$pdo === null) {
+        if (self::$pdo !== null) {
             return self::$pdo;
         }
 

@@ -1,5 +1,5 @@
 <?php
-namespace fastest\base;
+namespace fastphp\base;
 
 /**
  * 视图基类
